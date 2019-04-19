@@ -146,11 +146,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
     }
 
     @Override
-    public void onReceiveData() {
-
-    }
-
-    @Override
     public void onStartTracking() {
         startTracking();
     }

@@ -16,7 +16,6 @@ import butterknife.Unbinder;
 
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
-    @BindView(R.id.button_receive_data) Button buttonReceiveData;
     @BindView(R.id.button_send_data) Button buttonSendData;
     @BindView(R.id.button_show_list) Button buttonShowList;
     @BindView(R.id.button_show_list_bind) Button buttonShowListBind;
@@ -56,7 +55,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         buttonShowList.setOnClickListener(this);
         buttonShowListBind.setOnClickListener(this);
 
-        buttonReceiveData.setOnClickListener(this);
         buttonSendData.setOnClickListener(this);
 
         buttonStartTracking.setOnClickListener(this);
@@ -103,10 +101,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 mHomeFragmentListener.onSendData();
                 break;
             }
-            case R.id.button_receive_data:{
-                mHomeFragmentListener.onReceiveData();
-                break;
-            }
             case R.id.button_start_tracking:{
                 mHomeFragmentListener.onStartTracking();
                 break;
@@ -122,7 +116,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         void onShowList();
         void onShowListBind();
         void onSendData();
-        void onReceiveData();
 
         void onStartTracking();
         void onStopTracking();

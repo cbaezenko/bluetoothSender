@@ -22,7 +22,7 @@ public class BluetoothConnectionServer {
 
     private static final UUID MY_UUI_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
-    private AcceptThread mInsecureAccptThread;
+    private AcceptThread mInsecureAcceptThread;
     private ConnectThread mConnectThread;
     private BluetoothDevice mmDevice;
     private UUID deviceUUID;
@@ -169,9 +169,9 @@ public class BluetoothConnectionServer {
                 mConnectThread.cancel();
                 mConnectThread = null;
             }
-            if(mInsecureAccptThread == null){
-                mInsecureAccptThread = new AcceptThread();
-                mInsecureAccptThread.start();
+            if(mInsecureAcceptThread == null){
+                mInsecureAcceptThread = new AcceptThread();
+                mInsecureAcceptThread.start();
             }
         }
 
