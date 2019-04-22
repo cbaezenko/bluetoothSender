@@ -8,13 +8,18 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.util.Log;
 
+import com.singorenko.bluetoothsender.helper.IncomingMessageEvent;
+import com.singorenko.bluetoothsender.helper.OutgoingMessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
-public class BluetoothConnectionServer {
+public class BluetoothConnectionService {
 
     private static final String TAG = "BluetoothConnectionServ";
 
@@ -33,7 +38,7 @@ public class BluetoothConnectionServer {
     Context mContext;
     private final BluetoothAdapter mBluetoothAdapter;
 
-    public BluetoothConnectionServer(Context context) {
+    public BluetoothConnectionService(Context context) {
         mContext = context;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         start();
@@ -231,7 +236,8 @@ public class BluetoothConnectionServer {
                 try{
                 bytes = mmInStream.read(buffer);
                 String incomingMessage = new String(buffer, 0, bytes);
-                Log.d(TAG, "InputStream: "+incomingMessage);
+                Log.d(TAG, "InputStream: " + incomingMessage);
+                    EventBus.getDefault().post(new IncomingMessageEvent(incomingMessage));
             }catch (IOException e){
                     Log.e(TAG, "write: Error reading InputStream "+e.getMessage());
                 break;
@@ -242,7 +248,8 @@ public class BluetoothConnectionServer {
         //Call this from the main activity to send data to the remote device
         public void write(byte[] bytes){
             String text = new String(bytes, Charset.defaultCharset());
-            Log.d(TAG, "write: Writing to outStream: "+text);
+            Log.d(TAG, "write: Writing to outStream: " + text);
+            EventBus.getDefault().post(new OutgoingMessageEvent(text));
             try{
                 mmOutStream.write(bytes);
             }catch (IOException e){

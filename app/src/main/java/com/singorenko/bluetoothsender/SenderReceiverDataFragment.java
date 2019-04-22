@@ -16,8 +16,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.singorenko.bluetoothsender.helper.DeviceListAdapter;
+import com.singorenko.bluetoothsender.helper.IncomingMessageEvent;
+import com.singorenko.bluetoothsender.helper.OutgoingMessageEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -34,12 +43,12 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
     private final String TAG = "SenderReceiver";
 
     @BindView(R.id.button_connect) Button buttonConnect;
-    @BindView(R.id.button_refresh) Button buttonRefresh;
+    @BindView(R.id.button_refresh) ImageButton buttonRefresh;
     @BindView(R.id.tv_chat_box) TextView tvChatBox;
     @BindView(R.id.editText_text_to_send) EditText etTextToSend;
     @BindView(R.id.button_send_text) Button buttonSendText;
 
-    @BindView(R.id.button_onOff) Button buttonOnOff;
+    @BindView(R.id.button_onOff) ImageButton buttonOnOff;
     @BindView(R.id.button_enable_discoverable) Button buttonEnableDiscoverable;
     @BindView(R.id.button_discover) Button buttonDiscover;
 
@@ -54,7 +63,7 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
             UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
     private Unbinder mUnbinder;
-    BluetoothConnectionServer mBluetoothConnection;
+    BluetoothConnectionService mBluetoothConnection;
 
     BluetoothDevice mBTDevice;
 
@@ -91,11 +100,13 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
         buttonDiscover.setOnClickListener(this);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        mBluetoothConnection = new BluetoothConnectionServer(getContext());
+        mBluetoothConnection = new BluetoothConnectionService(getContext());
 
         mBTDevices = new ArrayList<>();
 
         lvNewDevices.setOnItemClickListener(this);
+
+        EventBus.getDefault().register(this);
     }
 
     @Override public void onDestroy() {
@@ -108,6 +119,12 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
             getActivity().unregisterReceiver(mBroadcastReceiver3);
             getActivity().unregisterReceiver(mBroadcastReceiver4);
         }
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override public void onClick(View v) {
@@ -383,7 +400,17 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
             mBTDevices.get(position).createBond();
 
             mBTDevice = mBTDevices.get(position);
-            mBluetoothConnection = new BluetoothConnectionServer(getContext());
+            mBluetoothConnection = new BluetoothConnectionService(getContext());
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onIncomingMessageEvent(IncomingMessageEvent event){
+        tvChatBox.setText(event.getText());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void outgoingMessageEvent(OutgoingMessageEvent event){
+        tvChatBox.setText(event.getOutgoingMessage());
     }
 }
