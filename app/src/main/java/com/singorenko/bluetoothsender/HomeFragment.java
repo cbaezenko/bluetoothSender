@@ -98,7 +98,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
             }
             case R.id.button_send_data:{
-                mHomeFragmentListener.onSendData();
+                mHomeFragmentListener.onSendReceiveData();
                 break;
             }
             case R.id.button_start_tracking:{
@@ -115,7 +115,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
    public interface OnHomeFragmentInteractionListener {
         void onShowList();
         void onShowListBind();
-        void onSendData();
+        void onSendReceiveData();
 
         void onStartTracking();
         void onStopTracking();

@@ -156,43 +156,40 @@ public class BluetoothConnectionServer {
                 Log.e(TAG, "cancel: close() of mmSocket in ConnectThread failed. "+e.getMessage());
             }
         }
+    }
+    /**
+     * Start the chat service. Specifically start AcceptThread to begin a
+     * session in listening (server) mode. Called by the Activity onResume()
+     */
+    public synchronized void start(){
+        Log.d(TAG, "start");
 
-        /**
-         * Start the chat service. Specifically start AcceptThread to begin a
-         * session in listening (server) mode. Called by the Activity onResume()
-         */
-        public synchronized void start(){
-            Log.d(TAG, "start");
-
-            //cancel any thread attempting to make a connection
-            if(mConnectThread != null){
-                mConnectThread.cancel();
-                mConnectThread = null;
-            }
-            if(mInsecureAcceptThread == null){
-                mInsecureAcceptThread = new AcceptThread();
-                mInsecureAcceptThread.start();
-            }
+        //cancel any thread attempting to make a connection
+        if(mConnectThread != null){
+            mConnectThread.cancel();
+            mConnectThread = null;
         }
-
-        /**
-         * AcceptThread starts and sits waiting for a connection.
-         * Then ConnectThread starts and attempts to make a connection with the other devices AcceptThread.
-         */
-
-        public void startClient(BluetoothDevice device, UUID uuid){
-            Log.d(TAG, "startClient: Started.");
-
-            //initprogress dialog
-            mProgressDialog = ProgressDialog.show(mContext, "Connecting Bluetooth",
-                    "Please Wait...", true);
-
-            mConnectThread = new ConnectThread(device, uuid);
-            mConnectThread.start();
-
+        if(mInsecureAcceptThread == null){
+            mInsecureAcceptThread = new AcceptThread();
+            mInsecureAcceptThread.start();
         }
     }
+    /**
+     * AcceptThread starts and sits waiting for a connection.
+     * Then ConnectThread starts and attempts to make a connection with the other devices AcceptThread.
+     */
 
+    public void startClient(BluetoothDevice device, UUID uuid){
+        Log.d(TAG, "startClient: Started.");
+
+        //initprogress dialog
+        mProgressDialog = ProgressDialog.show(mContext, "Connecting Bluetooth",
+                "Please Wait...", true);
+
+        mConnectThread = new ConnectThread(device, uuid);
+        mConnectThread.start();
+
+    }
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;

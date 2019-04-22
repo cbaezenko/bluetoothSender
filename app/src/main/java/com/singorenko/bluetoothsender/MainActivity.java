@@ -141,8 +141,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
     }
 
     @Override
-    public void onSendData() {
-
+    public void onSendReceiveData() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, SenderReceiverDataFragment.newInstance())
+                .commit();
     }
 
     @Override
