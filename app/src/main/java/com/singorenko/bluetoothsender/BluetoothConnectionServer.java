@@ -36,7 +36,7 @@ public class BluetoothConnectionServer {
     public BluetoothConnectionServer(Context context) {
         mContext = context;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
+        start();
     }
 
     /*
