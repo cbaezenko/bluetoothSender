@@ -1,11 +1,13 @@
 package com.singorenko.bluetoothsender;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,18 +18,18 @@ import butterknife.Unbinder;
 
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
-    @BindView(R.id.button_send_data) Button buttonSendData;
-    @BindView(R.id.button_show_list) Button buttonShowList;
-    @BindView(R.id.button_show_list_bind) Button buttonShowListBind;
+    @BindView(R.id.button_send_data) ImageButton buttonSendData;
+    @BindView(R.id.button_show_list) ImageButton buttonShowList;
+    @BindView(R.id.button_show_list_bind) ImageButton buttonShowListBind;
 
-    @BindView(R.id.button_start_tracking) Button buttonStartTracking;
-    @BindView(R.id.button_stop_tracking) Button buttonStopTracking;
+    @BindView(R.id.button_start_stop_tracking) ImageButton buttonStartStopTracking;
 
     @BindView(R.id.tv_activity_recognition_status)
     TextView tvActivityRecognitionStatus;
 
     private Unbinder mUnbinder;
     private OnHomeFragmentInteractionListener mHomeFragmentListener;
+    private boolean isRecognitionActivityButtonEnable;
 
     public HomeFragment() { }
 
@@ -57,8 +59,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         buttonSendData.setOnClickListener(this);
 
-        buttonStartTracking.setOnClickListener(this);
-        buttonStopTracking.setOnClickListener(this);
+        buttonStartStopTracking.setOnClickListener(this);
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -101,15 +102,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 mHomeFragmentListener.onSendReceiveData();
                 break;
             }
-            case R.id.button_start_tracking:{
-                mHomeFragmentListener.onStartTracking();
+            case R.id.button_start_stop_tracking:{
+                if(isRecognitionActivityButtonEnable) {
+                    isRecognitionActivityButtonEnable = false;
+                    buttonStartStopTracking.setBackground(getResources().getDrawable(R.drawable.ic_stop_black_24dp));
+                    mHomeFragmentListener.onStartTracking();
+                }else {
+                    isRecognitionActivityButtonEnable = true;
+                    buttonStartStopTracking.setBackground(getResources().getDrawable(R.drawable.ic_play_arrow_black_24dp));
+                    mHomeFragmentListener.onStopTracking();
+                }
+
                 break;
             }
-            case R.id.button_stop_tracking:{
-                mHomeFragmentListener.onStopTracking();
-                break;
-            }
-        }
+                    }
     }
 
    public interface OnHomeFragmentInteractionListener {

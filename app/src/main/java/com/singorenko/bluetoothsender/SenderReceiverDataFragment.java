@@ -17,10 +17,11 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 
+import com.singorenko.bluetoothsender.helper.ChatListAdapter;
 import com.singorenko.bluetoothsender.helper.DeviceListAdapter;
 import com.singorenko.bluetoothsender.helper.IncomingMessageEvent;
+import com.singorenko.bluetoothsender.helper.MessageModel;
 import com.singorenko.bluetoothsender.helper.OutgoingMessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,7 +43,6 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
     private final String TAG = "SenderReceiver";
 
     @BindView(R.id.button_connect) ImageButton buttonConnect;
-    @BindView(R.id.tv_chat_box) TextView tvChatBox;
     @BindView(R.id.editText_text_to_send) EditText etTextToSend;
     @BindView(R.id.button_send_text) ImageButton buttonSendText;
 
@@ -51,18 +51,21 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
     @BindView(R.id.button_discover) ImageButton buttonDiscover;
 
     @BindView(R.id.lvNewDevices) ListView lvNewDevices;
+    @BindView(R.id.lv_chat_box) ListView lvChatBox;
 
     private BluetoothAdapter mBluetoothAdapter;
 
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
+    public ArrayList<MessageModel> mMessageModels = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
+
+    private ChatListAdapter mChatListAdapter;
 
     private static final UUID MY_UUID_INSECURE =
             UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
     private Unbinder mUnbinder;
     BluetoothConnectionService mBluetoothConnection;
-
     BluetoothDevice mBTDevice;
 
     public SenderReceiverDataFragment() { }
@@ -104,7 +107,12 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
         lvNewDevices.setOnItemClickListener(this);
 
         EventBus.getDefault().register(this);
-    }
+
+        if(getContext()!= null) {
+            mChatListAdapter = new ChatListAdapter(getContext(), R.layout.message_adapter_view, mMessageModels);
+            lvChatBox.setAdapter(mChatListAdapter);
+        }
+        }
 
     @Override
     public void onResume(){
@@ -446,11 +454,19 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onIncomingMessageEvent(IncomingMessageEvent event){
-        tvChatBox.setText(event.getText());
+        if(getContext() != null) {
+            mMessageModels.add(new MessageModel(event.getText(), "friend:"));
+            mChatListAdapter = new ChatListAdapter(getContext(), R.layout.message_adapter_view, mMessageModels);
+            lvChatBox.invalidateViews();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void outgoingMessageEvent(OutgoingMessageEvent event){
-        tvChatBox.setText(event.getOutgoingMessage());
+        if(getContext() != null) {
+            mMessageModels.add(new MessageModel(event.getOutgoingMessage(), "me:"));
+            mChatListAdapter = new ChatListAdapter(getContext(), R.layout.message_adapter_view, mMessageModels);
+            lvChatBox.invalidateViews();
+        }
     }
 }

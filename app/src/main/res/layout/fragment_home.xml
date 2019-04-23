@@ -7,36 +7,37 @@
                                                    android:id="@+id/home_fragment"
              tools:context=".HomeFragment">
 
-
-    <Button
+    <!--android:text="Show List Available Devices"-->
+    <ImageButton
+        android:background="@drawable/ic_list_plus"
         android:id="@+id/button_show_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="32dp"
-        android:text="Show List Available Devices"
         app:layout_constraintBottom_toTopOf="@+id/button_send_data"
         app:layout_constraintEnd_toEndOf="@+id/button_send_data"
         app:layout_constraintStart_toStartOf="@+id/button_send_data"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <Button
+    <!--android:text="Send/Receive Data"-->
+    <ImageButton
         android:id="@+id/button_send_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Send/Receive Data"
+        android:background="@drawable/ic_chat_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.415"/>
+        app:layout_constraintVertical_bias="0.548"/>
 
     <TextView
         android:id="@+id/textView"
@@ -44,57 +45,52 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="16dp"
         android:text="Your state is:"
+        app:layout_constraintBottom_toTopOf="@+id/tv_activity_recognition_status"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_stop_tracking"/>
+        app:layout_constraintHorizontal_bias="0.536"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/tv_activity_recognition_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="40dp"
         android:text="NO_ONE"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textView"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView"/>
+        app:layout_constraintStart_toStartOf="@+id/textView"/>
 
-    <Button
-        android:id="@+id/button_start_tracking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <!--android:text="Start Tracking User Activity"-->
+    <ImageButton
+        android:id="@+id/button_start_stop_tracking"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Start Tracking User Activity"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/ic_play_arrow_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_send_data"/>
+        app:layout_constraintTop_toBottomOf="@+id/button_send_data"
+        app:layout_constraintVertical_bias="0.294"/>
 
-    <Button
-        android:id="@+id/button_stop_tracking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="Stop Tracking User Activity"
-        app:layout_constraintEnd_toEndOf="@+id/button_start_tracking"
-        app:layout_constraintStart_toStartOf="@+id/button_start_tracking"
-        app:layout_constraintTop_toBottomOf="@+id/button_start_tracking"/>
-
-    <Button
+    <!--android:text="Show List Bind Devices"-->
+    <ImageButton
+        android:background="@drawable/ic_list_star"
         android:id="@+id/button_show_list_bind"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Show List Bind Devices"
         app:layout_constraintBottom_toTopOf="@+id/button_send_data"
         app:layout_constraintEnd_toEndOf="@+id/button_show_list"
         app:layout_constraintStart_toStartOf="@+id/button_show_list"

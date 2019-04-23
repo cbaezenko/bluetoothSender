@@ -9,8 +9,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.DetectedActivity;
 import com.singorenko.bluetoothsender.helper.BackgroundDetectedActivitiesService;
@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnHomeFragmentInteractionListener,
         SensorEventListener {
 
+    private String TAG = getClass().getSimpleName();
     BroadcastReceiver mBroadcastReceiver;
     Sensor mSensor;
     SensorManager mSensorManager;
@@ -94,8 +95,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
             }
         }
 
-        Toast.makeText(this, label, Toast.LENGTH_SHORT).show();
-
         tvRecognizedStatusActivity.setText(label);
         tvConfidenceStatusActivity.setText(Integer.toString(confidence));
     }
@@ -149,11 +148,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnHo
 
     @Override
     public void onStartTracking() {
+        Log.d(TAG, "On Start Tracking Recognizes Activities");
         startTracking();
     }
 
     @Override
     public void onStopTracking() {
+        Log.d(TAG, "On Stop Tracking Recognizes Activities");
         stopTracking();
     }
 
