@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -42,15 +41,14 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
 
     private final String TAG = "SenderReceiver";
 
-    @BindView(R.id.button_connect) Button buttonConnect;
-    @BindView(R.id.button_refresh) ImageButton buttonRefresh;
+    @BindView(R.id.button_connect) ImageButton buttonConnect;
     @BindView(R.id.tv_chat_box) TextView tvChatBox;
     @BindView(R.id.editText_text_to_send) EditText etTextToSend;
-    @BindView(R.id.button_send_text) Button buttonSendText;
+    @BindView(R.id.button_send_text) ImageButton buttonSendText;
 
     @BindView(R.id.button_onOff) ImageButton buttonOnOff;
-    @BindView(R.id.button_enable_discoverable) Button buttonEnableDiscoverable;
-    @BindView(R.id.button_discover) Button buttonDiscover;
+    @BindView(R.id.button_enable_discoverable) ImageButton buttonEnableDiscoverable;
+    @BindView(R.id.button_discover) ImageButton buttonDiscover;
 
     @BindView(R.id.lvNewDevices) ListView lvNewDevices;
 
@@ -93,7 +91,6 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
 
         buttonConnect.setOnClickListener(this);
         buttonSendText.setOnClickListener(this);
-        buttonRefresh.setOnClickListener(this);
 
         buttonOnOff.setOnClickListener(this);
         buttonEnableDiscoverable.setOnClickListener(this);
@@ -109,15 +106,31 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
         EventBus.getDefault().register(this);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        buttonOnOff.setAlpha(1f);
+        buttonOnOff.setEnabled(true);
+        if(mBluetoothAdapter.isEnabled()){
+            buttonOnOff.setBackground(getResources().getDrawable(R.drawable.ic_bluetooth_connected_black_24dp));
+        }else{
+            buttonOnOff.setBackground(getResources().getDrawable(R.drawable.ic_bluetooth_disabled_black_24dp));
+        }
+    }
+
     @Override public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy: called.");
         mUnbinder.unbind();
         if (getActivity() != null) {
-            getActivity().unregisterReceiver(mBroadcastReceiver1);
-            getActivity().unregisterReceiver(mBroadcastReceiver2);
-            getActivity().unregisterReceiver(mBroadcastReceiver3);
-            getActivity().unregisterReceiver(mBroadcastReceiver4);
+            try {
+                getActivity().unregisterReceiver(mBroadcastReceiver1);
+                getActivity().unregisterReceiver(mBroadcastReceiver2);
+                getActivity().unregisterReceiver(mBroadcastReceiver3);
+                getActivity().unregisterReceiver(mBroadcastReceiver4);
+            }catch (RuntimeException e){
+             e.getStackTrace();
+            }
         }
     }
 
@@ -133,9 +146,6 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
                 startConnection();
                 break;
             }
-            case R.id.button_refresh:{
-                break;
-            }
             case R.id.button_send_text:{
                 byte[] bytes = etTextToSend.getText().toString().getBytes(Charset.defaultCharset());
                 mBluetoothConnection.write(bytes);
@@ -148,7 +158,7 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
             }
             case R.id.button_enable_discoverable:{
                 Log.d(TAG, "onClick: enable discoverable");
-                enableDisableDiscoverable();
+                    enableDisableDiscoverable();
             }
             case R.id.button_discover:{
                 discover();
@@ -156,7 +166,7 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
             }
         }
     }
-    //***remember the conncction will fail and app will crash if you haven't paired first
+    //***remember the connection will fail and app will crash if you haven't paired first
     public void startConnection(){
         startBTConnection(mBTDevice, MY_UUID_INSECURE);
     }
@@ -167,7 +177,6 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
 
     public void startBTConnection(BluetoothDevice device, UUID uuid){
         Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection.");
-
         mBluetoothConnection.startClient(device,uuid);
     }
 
@@ -276,17 +285,27 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
                 switch (state){
                     case BluetoothAdapter.STATE_OFF:{
                         Log.d(TAG, "onReceive: STATE_OFF");
+                        buttonOnOff.setEnabled(true);
+                        buttonOnOff.setAlpha(1f);
+                        buttonOnOff.setBackground(getResources().getDrawable(R.drawable.ic_bluetooth_disabled_black_24dp));
                         break;
                     }
                     case BluetoothAdapter.STATE_TURNING_OFF:{
+                        buttonOnOff.setEnabled(false);
+                        buttonOnOff.setAlpha(0.5f);
                         Log.d(TAG, "mBroadcastReceiver1: STATE TURNING OFF");
                         break;
                     }
                     case BluetoothAdapter.STATE_ON:{
+                        buttonOnOff.setEnabled(true);
+                        buttonOnOff.setAlpha(1f);
                         Log.d(TAG, "mBroadcastReceiver1: STATE_ON");
+                        buttonOnOff.setBackground(getResources().getDrawable(R.drawable.ic_bluetooth_connected_black_24dp));
                         break;
                     }
                     case BluetoothAdapter.STATE_TURNING_ON:{
+                        buttonOnOff.setEnabled(false);
+                        buttonOnOff.setAlpha(0.5f);
                         Log.d(TAG, "mBroadcastReceiver1: STATE TURNING ON");
                         break;
                     }
@@ -310,24 +329,45 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
                 switch (state){
                     //Deice is in Discoverable mode
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:{
+                        buttonEnableDiscoverable.setEnabled(false);
+                        buttonEnableDiscoverable.setAlpha(0.5f);
+                        buttonEnableDiscoverable.setBackground(getResources().getDrawable(R.drawable.ic_visibility_black_24dp));
                         Log.d(TAG, "mBroadcastReceiver1: Discoverability Enabled.");
                         break;
                     }
                     //Device is in Discoverable mode
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE:{
+                        buttonEnableDiscoverable.setBackground(getResources().getDrawable(R.drawable.ic_visibility_off_black_24dp));
+                        buttonEnableDiscoverable.setEnabled(true);
+                        buttonEnableDiscoverable.setAlpha(1f);
                         Log.d(TAG, "mBroadcastReceiver2: Discoverability Disabled. Not able to receive connections.");
                         break;
                     }
                     case BluetoothAdapter.SCAN_MODE_NONE:{
+                        buttonEnableDiscoverable.setEnabled(true);
+                        buttonEnableDiscoverable.setAlpha(1f);
+                        buttonEnableDiscoverable.setBackground(getResources().getDrawable(R.drawable.ic_visibility_off_black_24dp));
                         Log.d(TAG, "mBroadcastReceiver2: Discoverability Disabled. Not able to receive connections.");
                         break;
                     }
                     case BluetoothAdapter.STATE_CONNECTING:{
+                        buttonEnableDiscoverable.setEnabled(false);
+                        buttonEnableDiscoverable.setAlpha(0.5f);
                         Log.d(TAG, "mBroadcastReceiver2: Connecting...");
                         break;
                          }
+                         case BluetoothAdapter.STATE_DISCONNECTING:{
+                             buttonEnableDiscoverable.setEnabled(false);
+                             buttonEnableDiscoverable.setAlpha(0.5f);
+                             Log.d(TAG, "mBroadcastReceiver2: Disconnecting...");
+                             break;
+                         }
                     case BluetoothAdapter.STATE_CONNECTED:{
+                        buttonEnableDiscoverable.setEnabled(false);
+                        buttonEnableDiscoverable.setAlpha(0.5f);
+                        buttonEnableDiscoverable.setBackground(getResources().getDrawable(R.drawable.ic_visibility_black_24dp));
                         Log.d(TAG, "mBroadcastReceiver2: Connected.");
+                        break;
                     }
                 }
             }
