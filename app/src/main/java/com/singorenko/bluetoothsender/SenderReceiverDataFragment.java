@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.singorenko.bluetoothsender.helper.ChatListAdapter;
+import com.singorenko.bluetoothsender.helper.Constants;
 import com.singorenko.bluetoothsender.helper.DeviceListAdapter;
 import com.singorenko.bluetoothsender.helper.IncomingMessageEvent;
 import com.singorenko.bluetoothsender.helper.MessageModel;
@@ -455,7 +456,7 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onIncomingMessageEvent(IncomingMessageEvent event){
         if(getContext() != null) {
-            mMessageModels.add(new MessageModel(event.getText(), "friend:"));
+            mMessageModels.add(new MessageModel(event.getText(), Constants.senderUser));
             mChatListAdapter = new ChatListAdapter(getContext(), R.layout.message_adapter_view, mMessageModels);
             lvChatBox.invalidateViews();
         }
@@ -464,7 +465,7 @@ public class SenderReceiverDataFragment extends Fragment implements View.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void outgoingMessageEvent(OutgoingMessageEvent event){
         if(getContext() != null) {
-            mMessageModels.add(new MessageModel(event.getOutgoingMessage(), "me:"));
+            mMessageModels.add(new MessageModel(event.getOutgoingMessage(), Constants.receiverUser));
             mChatListAdapter = new ChatListAdapter(getContext(), R.layout.message_adapter_view, mMessageModels);
             lvChatBox.invalidateViews();
         }
